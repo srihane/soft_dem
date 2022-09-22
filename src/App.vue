@@ -1,14 +1,14 @@
 <template>
   <!--<img alt="Vue logo" src="./assets/logo.png">-->
   <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
-  <Home />
+  <!--<Home />-->
 
+  <router-view></router-view>
 </template>
 
 <script>
-
 //CSS
-require('./css/style.css');
+require("./css/style.css");
 
 // Importing Components
 //import HelloWorld from './components/HelloWorld.vue'
@@ -17,15 +17,15 @@ require('./css/style.css');
 //import Menu from './components/Menu.vue'
 
 // Views
-import Home from './views/Home.vue'
+//import Home from "./views/Home.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Home,
+    //Home,
     //HelloWorld
-  }
-}
+  },
+};
 </script>
 
 <style>

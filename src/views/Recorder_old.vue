@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Recorder</h1>
-
     <br />
 
     <div v-if="this.seeSelect == true">
@@ -28,7 +27,6 @@
           v-model="this.videoChoice"
           :change="setVideoParams()"
         >
-          <option value="false">Aucun</option>
           <option
             v-for="device in this.videoInput"
             :key="device"
@@ -37,59 +35,32 @@
             {{ device.label }}
           </option>
         </select>
-        <button @click.prevent="startWebcam()">Démarrer webcam</button>
 
         <br />
         <button @click.prevent="getDisplay()">Choisir l'écran</button>
       </form>
-    </div>
 
-    <button @click.prevent="record()">Record</button>
+      <button @click.prevent="reloadStream()">Actualiser</button>
+    </div>
 
     <!--<button @click.prevent="startWebcam()">Start Webcam</button>-->
 
     <div>
-      <video
-        id="webcam"
-        volume="0"
-        ref="webcam"
-        width="1"
-        height="1"
-        autoplay
-      ></video>
-      <video id="display" ref="display" width="1" height="1" autoplay></video>
+      <video width="400" height="300" autoplay id="myCam"></video>
+      <video width="400" height="300" autoplay id="myVideo"></video>
     </div>
     <div>
-      <canvas
-        width="800"
-        id="canvas"
-        height="500"
-        style="border: 1px solid #000000"
-        ref="canvas"
-      >
-      </canvas>
+      <canvas width="400" height="300" id="myCanvas"></canvas>
     </div>
   </div>
 </template>
 <script>
-console.log("Hello");
-
-/*
-var video = document.getElementById("live");
-var display = document.getElementById("display");
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d"); //changed this line to "canvas.getContext('2d')".
-//timer = setInterval(function () {
-*/
-
 export default {
   name: "Recorder",
   data() {
     return {
-      canvas: null,
-      ctx: null,
-      isDrawing: null,
-      webcamStream: "",
+      audioStream: "",
+      videoStream: "",
       displayStream: "",
       seeSelect: false,
       audioInput: [],
@@ -110,13 +81,6 @@ export default {
       },
     };
   },
-  mounted() {
-    var vm = this; // cache
-    vm.canvas = vm.$refs.canvas;
-    vm.ctx = vm.canvas.getContext("2d");
-    vm.canvas.addEventListener("load", vm.onLoad);
-  },
-
   created() {
     //this.getUserMedia();
     //this.getAudioDevices();
@@ -128,64 +92,12 @@ export default {
 
       //await this.getDisplay();
     },
-    record() {
-      console.log("recording ...");
-      var vm = this;
-
-      var canvaStream = vm.canvas.captureStream(30);
-      console.log(canvaStream);
-      var mediaRecorder = new MediaRecorder(canvaStream);
-
-      var chunks = [];
-      mediaRecorder.ondataavailable = function (e) {
-        chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = function () {
-        var blob = new Blob(chunks, { type: "video/mp4" });
-        chunks = [];
-        var videoURL = URL.createObjectURL(blob);
-        //video.src = videoURL;
-        console.log(videoURL);
-      };
-    },
-    onLoad() {
-      var vm = this;
-      var webcam = vm.$refs.webcam;
-      var display = vm.$refs.display;
-
-      setInterval(function () {
-        // Draw Display
-        vm.ctx.drawImage(display, 0, 0, 800, 500);
-        // Draw Webcam
-        vm.ctx.drawImage(webcam, 0, 0, 250, 150);
-      }, 1);
-
-      /*
-      var video = document.getElementById("live");
-      var display = document.getElementById("display");
-      setInterval(function () {
-        // Draw Display
-        this.ctx.drawImage(display, 0, 0, 800, 500);
-        // Draw Webcam
-        this.ctx.drawImage(video, 0, 0, 250, 150);
-      }, 1);
-      */
-    },
-    startWebcam() {
+    reloadStream() {
       this.seeSelect = true;
       navigator.mediaDevices.getUserMedia(this.constraints).then((stream) => {
-        let video = document.getElementById("webcam");
+        let video = document.getElementById("myCam");
         video.srcObject = stream;
-        this.webcamStream = stream;
-
-        console.log(stream);
-        console.log(stream.getTracks());
-        const myAudioTrack = stream.getAudioTracks();
-        console.log(myAudioTrack[0].getSettings());
       });
-
-      this.onLoad();
     },
     setVideoParams() {
       console.log("setVideoParams : " + this.videoChoice.deviceId);
@@ -222,12 +134,16 @@ export default {
         .getDisplayMedia(this.displayMediaOptions)
         .then((stream) => {
           //this.displayInput = stream;
-          let video = document.getElementById("display");
+          let video = document.getElementById("myVideo");
           video.srcObject = stream;
           this.displayStream = stream;
-        });
 
-      this.onLoad();
+          var canvas = document.querySelector("#myCanvas");
+          var ctx = canvas.getContext("2d");
+          var canvasVideo = document.querySelector("myVideo");
+
+          ctx.drawImage(canvasVideo, 0, 0);
+        });
     },
     getDevices() {
       navigator.mediaDevices.enumerateDevices().then((devices) => {

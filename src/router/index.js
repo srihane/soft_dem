@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
 import Recorder from "@/views/Recorder.vue";
+import Signup from "@/views/Signup.vue";
 import ErrorPage from "@/views/ErrorPage.vue";
 
 const routes = [
@@ -18,6 +19,14 @@ const routes = [
     component: Recorder,
     meta: {
       title: "Recorder",
+    },
+  },
+  {
+    name: "Signup",
+    path: "/Signup",
+    component: Signup,
+    meta: {
+      title: "Signup",
     },
   },
   {

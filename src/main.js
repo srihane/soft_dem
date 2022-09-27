@@ -1,18 +1,24 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import store from './store';
-import router from './router';
+import { createApp } from "vue";
+import App from "./App.vue";
+import store from "./store";
+import router from "./router";
 
 // Font Awesome
-import '@fortawesome/fontawesome-free/css/all.css'
-import '@fortawesome/fontawesome-free/js/all.js'
+import "@fortawesome/fontawesome-free/css/all.css";
+import "@fortawesome/fontawesome-free/js/all.js";
+
+import Antd from "ant-design-vue";
+import "ant-design-vue/dist/antd.css";
 
 //importing AOS
-import AOS from 'aos'
-import 'aos/dist/aos.css'
+import AOS from "aos";
+import "aos/dist/aos.css";
 
-createApp(App)
-.use(router)
-.use(store)
-.use(AOS.init())
-.mount('#app')
+//createApp(App).use(router).use(store).use(AOS.init()).use(Antd).mount("#app");
+
+const myapp = createApp(App);
+myapp.use(router);
+myapp.use(store);
+myapp.use(AOS.init());
+myapp.use(Antd);
+myapp.mount("#app");

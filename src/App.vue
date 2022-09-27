@@ -1,7 +1,7 @@
 <template>
   <!--<img alt="Vue logo" src="./assets/logo.png">-->
   <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
-  <!--<Home />-->
+  <Menu />
 
   <router-view></router-view>
 </template>
@@ -14,7 +14,7 @@ require("./css/style.css");
 //import HelloWorld from './components/HelloWorld.vue'
 
 // Components
-//import Menu from './components/Menu.vue'
+import Menu from "./components/Menu.vue";
 
 // Views
 //import Home from "./views/Home.vue";
@@ -24,6 +24,7 @@ export default {
   components: {
     //Home,
     //HelloWorld
+    Menu,
   },
 };
 </script>

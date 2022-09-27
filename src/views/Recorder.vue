@@ -44,10 +44,18 @@
       </form>
     </div>
 
-    <button @click.prevent="record()" v-if="this.mediaRecorder == null">
+    <button
+      class="btn btn-success"
+      @click.prevent="record()"
+      v-if="this.mediaRecorder == null"
+    >
       Start Record
     </button>
-    <button @click.prevent="stopRecord()" v-if="this.mediaRecorder != null">
+    <button
+      class="btn btn-danger"
+      @click.prevent="stopRecord()"
+      v-if="this.mediaRecorder != null"
+    >
       Stop Record
     </button>
 

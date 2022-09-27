@@ -44,7 +44,12 @@
       </form>
     </div>
 
-    <button @click.prevent="record()">Record</button>
+    <button @click.prevent="record()" v-if="this.mediaRecorder == null">
+      Start Record
+    </button>
+    <button @click.prevent="stopRecord()" v-if="this.mediaRecorder != null">
+      Stop Record
+    </button>
 
     <!--<button @click.prevent="startWebcam()">Start Webcam</button>-->
 
@@ -61,17 +66,27 @@
     </div>
     <div>
       <canvas
-        width="800"
+        width="1280"
         id="canvas"
-        height="500"
+        height="720"
         style="border: 1px solid #000000"
         ref="canvas"
       >
       </canvas>
     </div>
+
+    <video
+      controls
+      id="previewVideo"
+      ref="previewVideo"
+      width="300"
+      height="200"
+      autoplay
+    ></video>
   </div>
 </template>
 <script>
+import axios from "axios";
 console.log("Hello");
 
 /*
@@ -86,6 +101,8 @@ export default {
   name: "Recorder",
   data() {
     return {
+      mediaRecorder: null,
+      chunks: [],
       canvas: null,
       ctx: null,
       isDrawing: null,
@@ -93,6 +110,7 @@ export default {
       displayStream: "",
       seeSelect: false,
       audioInput: [],
+      audioStream: null,
       audioChoice: "",
       videoChoice: "",
       //displayChoice,
@@ -128,26 +146,94 @@ export default {
 
       //await this.getDisplay();
     },
+    stopRecord() {
+      //vm.mediaRecorder.stop();
+      this.mediaRecorder.stop();
+      this.mediaRecorder = null;
+    },
     record() {
       console.log("recording ...");
       var vm = this;
+      var chunks = [];
 
       var canvaStream = vm.canvas.captureStream(30);
+      canvaStream.addTrack(this.webcamStream.getAudioTracks()[0]);
       console.log(canvaStream);
-      var mediaRecorder = new MediaRecorder(canvaStream);
 
-      var chunks = [];
-      mediaRecorder.ondataavailable = function (e) {
+      /*
+      const options = {
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 2500000,
+        mimeType: "video/webm",
+      };
+      */
+      const options = {
+        mimeType: "video/webm",
+        videoMaximizeFrameRate: true,
+      };
+      vm.mediaRecorder = new MediaRecorder(canvaStream, options);
+      this.mediaRecorder = vm.mediaRecorder;
+
+      vm.mediaRecorder.ondataavailable = function (e) {
         chunks.push(e.data);
       };
 
-      mediaRecorder.onstop = function () {
-        var blob = new Blob(chunks, { type: "video/mp4" });
-        chunks = [];
+      vm.mediaRecorder.onstop = function () {
+        var blob = new Blob(chunks, { type: "video/webm" });
+        console.log(blob);
+
+        const file = new File([blob], "filename.webm", {
+          type: blob.type,
+          lastModified: new Date().getTime(),
+        });
+
+        console.log(file);
+
+        var formData = new FormData();
+
+        formData.append("myfile", file);
+        console.log(formData);
+
+        try {
+          axios.post("http://localhost:3001/upload_file", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          /*
+        await axios({
+          url: "http://localhost:3000/api",
+          method: "post",
+          data: formData,
+          header: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            Accept: "application/json",
+            //'Authorisation': 'Bearer ' +variable
+          },
+        });
+        */
+        } catch (err) {
+          console.log(err);
+        }
+
+        //var file = new File(blob, "myVideo.webm");
+        //console.log(file);
+
+        //console.log(chunks);
+        chunks = []; // Reset chunks
         var videoURL = URL.createObjectURL(blob);
-        //video.src = videoURL;
+        //var previewVideo = this.$refs.previewVideo;
+        var previewVideo = document.getElementById("previewVideo");
+
+        console.log(previewVideo);
+        previewVideo.src = videoURL;
         console.log(videoURL);
       };
+
+      vm.mediaRecorder.start();
+      this.onLoad();
     },
     onLoad() {
       var vm = this;
@@ -156,9 +242,9 @@ export default {
 
       setInterval(function () {
         // Draw Display
-        vm.ctx.drawImage(display, 0, 0, 800, 500);
+        vm.ctx.drawImage(display, 0, 0, 1280, 720);
         // Draw Webcam
-        vm.ctx.drawImage(webcam, 0, 0, 250, 150);
+        vm.ctx.drawImage(webcam, 0, 0, 426, 240);
       }, 1);
 
       /*
@@ -179,10 +265,10 @@ export default {
         video.srcObject = stream;
         this.webcamStream = stream;
 
-        console.log(stream);
-        console.log(stream.getTracks());
-        const myAudioTrack = stream.getAudioTracks();
-        console.log(myAudioTrack[0].getSettings());
+        //console.log(stream);
+        //console.log(stream.getTracks());
+        //const myAudioTrack = stream.getAudioTracks();
+        //console.log(myAudioTrack[0].getSettings());
       });
 
       this.onLoad();
@@ -198,6 +284,15 @@ export default {
       this.constraints.audio = {
         deviceId: this.audioChoice.deviceId,
       };
+
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: { deviceId: this.audioChoice.deviceId },
+        })
+        .then((audioStream) => {
+          //console.log(audioStream);
+          this.audioStream = audioStream;
+        });
     },
     getUserMedia() {
       // Get Permissions

@@ -1,7 +1,5 @@
 <template>
-  <a-input v-model:value="value" placeholder="Nom" />
-  <a-input v-model:value="value" placeholder="Prénom" />
-  <a-input-password v-model:value="value" placeholder="Password" />
+  <div></div>
 </template>
 <script>
 export default {

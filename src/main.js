@@ -7,9 +7,6 @@ import router from "./router";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 
-import Antd from "ant-design-vue";
-import "ant-design-vue/dist/antd.css";
-
 //importing AOS
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -20,5 +17,4 @@ const myapp = createApp(App);
 myapp.use(router);
 myapp.use(store);
 myapp.use(AOS.init());
-myapp.use(Antd);
 myapp.mount("#app");

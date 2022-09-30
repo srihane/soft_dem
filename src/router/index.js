@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
 import Recorder from "@/views/Recorder.vue";
 import Signup from "@/views/Signup.vue";
+import Signin from "@/views/Signin.vue";
 import ErrorPage from "@/views/ErrorPage.vue";
 
 const routes = [
@@ -27,6 +28,14 @@ const routes = [
     component: Signup,
     meta: {
       title: "Signup",
+    },
+  },
+  {
+    name: "Signin",
+    path: "/Signin",
+    component: Signin,
+    meta: {
+      title: "Signin",
     },
   },
   {

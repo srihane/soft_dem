@@ -17,4 +17,5 @@ const myapp = createApp(App);
 myapp.use(router);
 myapp.use(store);
 myapp.use(AOS.init());
+
 myapp.mount("#app");

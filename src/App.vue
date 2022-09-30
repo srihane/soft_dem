@@ -2,7 +2,6 @@
   <!--<img alt="Vue logo" src="./assets/logo.png">-->
   <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
   <Menu />
-
   <router-view></router-view>
 </template>
 
@@ -30,6 +29,7 @@ export default {
 </script>
 
 <style>
+/*@import "~bulma/css/bulma.css";*/
 /*
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

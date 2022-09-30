@@ -3,6 +3,7 @@ import Home from "@/views/Home.vue";
 import Recorder from "@/views/Recorder.vue";
 import Signup from "@/views/Signup.vue";
 import Signin from "@/views/Signin.vue";
+import Account from "@/views/Account.vue";
 import ErrorPage from "@/views/ErrorPage.vue";
 
 const routes = [
@@ -20,6 +21,14 @@ const routes = [
     component: Recorder,
     meta: {
       title: "Recorder",
+    },
+  },
+  {
+    name: "Account",
+    path: "/Account",
+    component: Account,
+    meta: {
+      title: "Account",
     },
   },
   {

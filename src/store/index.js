@@ -16,28 +16,19 @@
     })
 */
 
-
 //import Web3 from 'web3';
 
-import Vuex from 'vuex'
-
+import Vuex from "vuex";
 
 const store = new Vuex.Store({
-    
-    state: {
-        //globalconfig: config,
-        //server: config.server
-    },
-    getters: {
-        
-    },
-    mutations: {
-
-    },
-    actions: {  
-
-    },
-
-})
+  state: {
+    //globalconfig: config,
+    //server: config.server
+    userData: null,
+  },
+  getters: {},
+  mutations: {},
+  actions: {},
+});
 
 export default store;

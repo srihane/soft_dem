@@ -1,0 +1,5 @@
+{
+  "url_signup": "http://localhost:3001/signup",
+  "url_signin": "http://localhost:3001/signin",
+  "url_upload_file": "http://localhost:3002/upload_file"
+}

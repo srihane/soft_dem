@@ -203,7 +203,7 @@ export default {
         console.log(formData);
 
         try {
-          axios.post("http://localhost:3001/upload_file", formData, {
+          axios.post(this.$store.state.gconfig.url_upload_file, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

@@ -158,9 +158,11 @@ export default {
         user_password: this.user_password2,
       };
 
+      console.log(this.$store.state.gconfig);
+
       try {
         axios
-          .post("http://localhost:3001/signup", sendData, {
+          .post(this.$store.state.gconfig.url_signup, sendData, {
             headers: {
               //"Content-Type": "multipart/form-data",
               "Content-Type": "application/json",

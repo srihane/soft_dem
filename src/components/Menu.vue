@@ -20,6 +20,9 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Créer</a>
+            </li>
           </ul>
           <div
             class="d-flex justify-content-end"

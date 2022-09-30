@@ -1,5 +1,5 @@
 // Documents config
-//let config = require('../config/config.json')
+let config = require("../../config/config.json");
 
 //Socketio
 //import io from "socket.io-client";
@@ -22,7 +22,7 @@ import Vuex from "vuex";
 
 const store = new Vuex.Store({
   state: {
-    //globalconfig: config,
+    gconfig: config,
     //server: config.server
     userData: null,
   },

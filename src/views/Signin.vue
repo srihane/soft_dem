@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <!-- SIGN UP -->
+    {{ this.$store.state.gconfig.url_signin }}
 
     <div class="row">
       <div class="col">

@@ -109,6 +109,7 @@ export default {
   name: "Recorder",
   data() {
     return {
+      upload_file_serverURL: this.$store.state.gconfig.url_upload_file,
       mediaRecorder: null,
       chunks: [],
       canvas: null,
@@ -154,6 +155,7 @@ export default {
 
       //await this.getDisplay();
     },
+
     stopRecord() {
       //vm.mediaRecorder.stop();
       this.mediaRecorder.stop();
@@ -200,10 +202,13 @@ export default {
         var formData = new FormData();
 
         formData.append("myfile", file);
-        console.log(formData);
+        //console.log(formData.get("myfile"));
 
+        //console.log(vm.upload_file_serverURL);
+
+        //http://localhost:3000/upload_file
         try {
-          axios.post(this.$store.state.gconfig.url_upload_file, formData, {
+          axios.post(vm.$store.state.gconfig.url_upload_file, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -282,13 +287,13 @@ export default {
       this.onLoad();
     },
     setVideoParams() {
-      console.log("setVideoParams : " + this.videoChoice.deviceId);
+      //console.log("setVideoParams : " + this.videoChoice.deviceId);
       this.constraints.video = {
         deviceId: this.videoChoice.deviceId,
       };
     },
     setAudioParams() {
-      console.log("setAudioParams : " + this.audioChoice.deviceId);
+      //console.log("setAudioParams : " + this.audioChoice.deviceId);
       this.constraints.audio = {
         deviceId: this.audioChoice.deviceId,
       };

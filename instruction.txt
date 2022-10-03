@@ -1,3 +1,6 @@
+https://springboot-vuejs-reactjs.blogspot.com/2019/07/how-to-deploy-vuejs-app-using-nginx-on.html
+
+
 Server DEBIAN 11
 
 Désinstaller APACHE

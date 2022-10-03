@@ -22,7 +22,7 @@
               <router-link class="nav-link active" to="/">Home</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/Recorde"
+              <a class="nav-link active" aria-current="page" href="/Recorder"
                 >Créer Vidéo</a
               >
             </li>

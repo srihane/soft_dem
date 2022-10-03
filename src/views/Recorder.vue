@@ -284,7 +284,7 @@ export default {
           axios.post(vm.$store.state.gconfig.url_upload_file, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
-              // "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Origin": "*",
               // Accept: "application/json",
               // 'Authorisation': 'Bearer ' +variable
             },

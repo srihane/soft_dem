@@ -1,0 +1,79 @@
+Server DEBIAN 11
+
+Désinstaller APACHE
+sudo apt-get remove apache2*
+
+1) Installation NGINX
+sudo apt update
+sudo apt install nginx
+
+*Other utils commandes*
+// Restart a module
+sudo systemctl restart nginx
+// Check open ports
+sudo netstat -tulnp 
+
+
+2) Modification du repertoire de lecture index.html de NGINX
+/etc/nginx/sites-available/default
+change : root /var/www/html;
+to : root /var/www/html/dist;
+
+
+https://www.vultr.com/docs/how-to-run-multiple-node-js-applications-on-ubuntu-20-04-with-nginx/
+3) Activation du firewall
+sudo ufw enable
+
+4) Authoriser Nginx dans le firewall
+sudo ufw allow "Nginx Full"
+
+5) Authoriser les connections SSH
+sudo ufw allow 'OpenSSH'
+
+6) créer un fichier pour le site
+/etc/nginx/sites-available/exemple.com
+
+7) Ecrire dans le fichier
+server {
+  listen 80;
+  listen [::]:80;
+
+  server_name example.com www.example.com;
+
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+
+-- Installation de npm
+sudo apt update
+sudo apt install npm
+
+
+
+
+
+
+
+
+
+
+
+
+# First attempt to serve request as file, then
+# as directory, then fall back to displaying a 404.
+try_files $uri $uri/ =404;
+
+proxy_pass http://localhost:3000;
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection 'upgrade';
+proxy_set_header Host $host;
+proxy_cache_bypass $http_upgrade;
+
+

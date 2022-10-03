@@ -1,5 +1,8 @@
 {
-  "url_signup": "http://localhost:3001/signup",
-  "url_signin": "http://localhost:3001/signin",
-  "url_upload_file": "http://localhost:3002/upload_file"
+  "url_signup": "http://localhost:3000/signup",
+  "url_signin": "http://localhost:3000/signin",
+  "url_upload_file": "http://localhost:3000/upload_file",
+  "p_url_signup": "http://212.227.71.186:3000/signup",
+  "p_url_signin": "http://212.227.71.186:3000/signin",
+  "p_url_upload_file": "http://212.227.71.186:2000/upload_file"
 }

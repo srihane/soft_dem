@@ -18,7 +18,8 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Home</a>
+              <!--<a class="nav-link active" aria-current="page" href="/">Home</a>-->
+              <router-link class="nav-link active" to="/">Home</router-link>
             </li>
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/">Créer</a>
@@ -30,10 +31,14 @@
           >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/Signup">Signup</a>
+                <!--<a class="nav-link" href="/Signup">Signup</a>-->
+                <router-link class="nav-link" to="/Signup">Signup</router-link>
               </li>
               <li class="nav-item">
-                <a class="btn btn-primary" href="/Signin">Signin</a>
+                <!--<a class="btn btn-primary" href="/Signin">Signin</a>-->
+                <router-link class="btn btn-primary" to="/Signin"
+                  >Signin</router-link
+                >
               </li>
             </ul>
           </div>

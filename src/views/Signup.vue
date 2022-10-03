@@ -79,7 +79,7 @@
           <button
             ref="submitButton"
             class="btn btn-outline-dark"
-            @click="submit()"
+            @click.prevent="submit()"
             disabled
           >
             S'inscrire

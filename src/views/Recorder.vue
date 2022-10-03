@@ -12,7 +12,6 @@
         <select v-model="this.typeOfRecord">
           <option value="1">Screen and Camera</option>
           <option value="2">Camera Only</option>
-          <option value="3">Screen Only</option>
         </select>
 
         <button
@@ -234,7 +233,6 @@ export default {
 
       //await this.getDisplay();
     },
-
     stopRecord() {
       //vm.mediaRecorder.stop();
       this.mediaRecorder.stop();
@@ -246,7 +244,7 @@ export default {
       var chunks = [];
 
       var canvaStream = vm.canvas.captureStream(30);
-      canvaStream.addTrack(this.webcamStream.getAudioTracks()[0]);
+      canvaStream.addTrack(this.audioStream.getAudioTracks()[0]);
       console.log(canvaStream);
 
       /*
@@ -350,6 +348,8 @@ export default {
           track.stop();
         });
 
+        this.clearCanvas();
+
         this.onLoad();
         console.log(this.webcamStream);
 
@@ -364,7 +364,7 @@ export default {
       let selected = e.target.value;
       console.log(selected);
 
-      if (selected === "disabled") {
+      if (selected === "off") {
         // User want to disable Video Camera
         this.startWebcam(false);
       } else {
@@ -422,7 +422,7 @@ export default {
           this.displayStream = stream;
         });
 
-      //this.onLoad();
+      this.onLoad();
     },
     getDevices() {
       navigator.mediaDevices.enumerateDevices().then((devices) => {
@@ -447,6 +447,13 @@ export default {
           }
         });
       });
+    },
+    clearCanvas() {
+      let video = document.getElementById("webcam");
+      video.src = "";
+      video.srcObject = null;
+
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
   },
 };

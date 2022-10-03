@@ -1,8 +1,5 @@
 .DS_Store
 node_modules
-/server/uploads/videos/
-
-
 
 # local env files
 .env.local

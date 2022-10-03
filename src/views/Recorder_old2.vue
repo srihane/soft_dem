@@ -5,56 +5,35 @@
     <br />
 
     <div>
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1"
-          ><i class="fa-solid fa-clapperboard"></i
-        ></span>
-        <select v-model="this.typeOfRecord">
-          <option value="1">Screen and Camera</option>
-          <option value="2">Camera Only</option>
-          <option value="3">Screen Only</option>
-        </select>
-
-        <button
-          class="btn btn-success"
-          @click.prevent="record()"
-          v-if="this.mediaRecorder == null"
-        >
-          Start Record
-        </button>
-        <button
-          class="btn btn-danger"
-          @click.prevent="stopRecord()"
-          v-if="this.mediaRecorder != null"
-        >
-          Stop Record
-        </button>
-      </div>
-
       <form>
-        <div
-          class="select_params"
-          v-if="this.typeOfRecord == '1' || this.typeOfRecord == '2'"
-        >
-          <!--
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1"
+            ><i class="fa-solid fa-clapperboard"></i
+          ></span>
+          <select @change="selectTypeofRecord()" v-model="typeofRecord">
+            <option value="1">Screen and Camera</option>
+            <option value="2">Screen Only</option>
+            <option value="3">Camera Only</option>
+          </select>
+        </div>
+
+        <div class="form-check form-switch select_params">
           <input
             class="form-check-input"
             type="checkbox"
             role="switch"
             id="flexSwitchCheckDefault"
-            v-model="this.activeWebcam"
           />
-          -->
           <label class="form-check-label" for="flexSwitchCheckDefault"
             ><i class="fa-solid fa-video"></i
           ></label>
 
           <select
-            id="select_video"
+            id="select_audio"
             v-model="this.videoChoice"
-            @change="setVideoParams($event)"
+            :change="setVideoParams()"
           >
-            <option value="off">Off</option>
+            <option value="false">Aucun</option>
             <option
               v-for="device in this.videoInput"
               :key="device"
@@ -65,16 +44,13 @@
           </select>
         </div>
 
-        <div class="select_params">
-          <!--
+        <div class="form-check form-switch select_params">
           <input
             class="form-check-input"
             type="checkbox"
             role="switch"
             id="flexSwitchCheckDefault"
-            v-model="this.activeAudio"
           />
-          -->
           <label class="form-check-label" for="flexSwitchCheckDefault"
             ><i class="fa-solid fa-microphone"></i
           ></label>
@@ -84,7 +60,6 @@
             v-model="this.audioChoice"
             :change="setAudioParams()"
           >
-            <option value="off">Off</option>
             <option
               v-for="device in this.audioInput"
               :key="device"
@@ -95,75 +70,66 @@
           </select>
         </div>
 
-        <!--<div class="form-check form-switch select_params">-->
-        <div
-          class="select_params"
-          v-if="this.typeOfRecord == '1' || this.typeOfRecord == '3'"
-        >
-          <!--
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="flexSwitchCheckDefault"
-            v-model="this.activeDisplay"
-          />
-          -->
-
-          <label class="form-check-label" for="flexSwitchCheckDefault"
-            ><i class="fa-solid fa-desktop"></i
-          ></label>
-          <button
-            class="btn btn-dark btn-sm"
-            style="margin-left: 10px"
-            @click.prevent="getDisplay()"
-          >
-            Choisir l'écran
-          </button>
-        </div>
-
         <br />
 
-        <!--<button @click.prevent="startWebcam(true)">Démarrer webcam</button>-->
+        <button @click.prevent="startWebcam()">Démarrer webcam</button>
+
+        <br />
+        <button @click.prevent="getDisplay()">Choisir l'écran</button>
       </form>
     </div>
 
-    <div v-if="this.typeOfRecord == '1' || this.typeOfRecord == '3'">
-      <div>
-        <video
-          id="webcam"
-          volume="0"
-          ref="webcam"
-          width="1"
-          height="1"
-          autoplay
-        ></video>
-        <!--<video id="display" ref="display" width="1" height="1" autoplay></video>-->
-        <video id="display" ref="display" width="1" height="1" autoplay></video>
-      </div>
-      <div>
-        <canvas
-          width="1280"
-          id="canvas"
-          height="720"
-          style="border: 1px solid #000000"
-          ref="canvas"
-        >
-        </canvas>
-      </div>
+    <button
+      class="btn btn-success"
+      @click.prevent="record()"
+      v-if="this.mediaRecorder == null"
+    >
+      Start Record
+    </button>
+    <button
+      class="btn btn-danger"
+      @click.prevent="stopRecord()"
+      v-if="this.mediaRecorder != null"
+    >
+      Stop Record
+    </button>
 
+    <div>
       <video
-        controls
-        id="previewVideo"
-        ref="previewVideo"
-        width="300"
-        height="200"
+        id="webcam"
+        volume="0"
+        ref="webcam"
+        width="1"
+        height="1"
+        autoplay
       ></video>
+      <!--<video id="display" ref="display" width="1" height="1" autoplay></video>-->
+      <video id="display" ref="display" width="1" height="1"></video>
     </div>
+    <div>
+      <canvas
+        width="1280"
+        id="canvas"
+        height="720"
+        style="border: 1px solid #000000"
+        ref="canvas"
+      >
+      </canvas>
+    </div>
+
+    <video
+      controls
+      id="previewVideo"
+      ref="previewVideo"
+      width="300"
+      height="200"
+      autoplay
+    ></video>
   </div>
 </template>
 <script>
 import axios from "axios";
+console.log("Hello");
 
 /*
 var video = document.getElementById("live");
@@ -178,32 +144,23 @@ export default {
   data() {
     return {
       // Selection Webcam and Micro
-      typeOfRecord: "1",
-      activeWebcam: false,
-      activeAudio: false,
-      activeDisplay: false,
+      typeofRecord: null,
 
-      // Media Recorder
+      // Others
       mediaRecorder: null,
       chunks: [],
-
-      // Canvas
       canvas: null,
       ctx: null,
       isDrawing: null,
-
-      // Streams vm
       webcamStream: "",
       displayStream: "",
-      audioStream: null,
-
-      videoInput: [],
       audioInput: [],
+      audioStream: null,
       audioChoice: "",
       videoChoice: "",
-
+      //displayChoice,
+      videoInput: [],
       displayInput: [],
-
       constraints: {
         video: true,
         audio: true,
@@ -233,6 +190,14 @@ export default {
       await this.getUserMedia();
 
       //await this.getDisplay();
+    },
+    selectTypeofRecord() {
+      console.log("selectTypeofRecord()");
+
+      if (this.typeofRecord === "1") {
+        // Screen and Camera
+        console.log("// Screen and Camera");
+      }
     },
 
     stopRecord() {
@@ -275,10 +240,14 @@ export default {
           type: blob.type,
           lastModified: new Date().getTime(),
         });
+
         console.log(file);
 
         var formData = new FormData();
+
         formData.append("myfile", file);
+
+        //console.log(vm.$store.state.gconfig.url_upload_file);
 
         // http://localhost:3000/upload_file
         // vm.$store.state.gconfig.url_upload_file
@@ -286,17 +255,29 @@ export default {
           axios.post(vm.$store.state.gconfig.url_upload_file, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
-              // "Access-Control-Allow-Origin": "*",
-              // Accept: "application/json",
-              // 'Authorisation': 'Bearer ' +variable
             },
           });
+
+          /*
+        await axios({
+          url: "http://localhost:3000/api",
+          method: "post",
+          data: formData,
+          header: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            Accept: "application/json",
+            //'Authorisation': 'Bearer ' +variable
+          },
+        });
+        */
         } catch (err) {
           console.log(err);
         }
 
         //var file = new File(blob, "myVideo.webm");
         //console.log(file);
+
         //console.log(chunks);
         chunks = []; // Reset chunks
         var videoURL = URL.createObjectURL(blob);
@@ -319,61 +300,41 @@ export default {
       setInterval(function () {
         // Draw Display
         vm.ctx.drawImage(display, 0, 0, 1280, 720);
-
         // Draw Webcam
         vm.ctx.drawImage(webcam, 0, 0, 426, 240);
       }, 1);
+
+      /*
+      var video = document.getElementById("live");
+      var display = document.getElementById("display");
+      setInterval(function () {
+        // Draw Display
+        this.ctx.drawImage(display, 0, 0, 800, 500);
+        // Draw Webcam
+        this.ctx.drawImage(video, 0, 0, 250, 150);
+      }, 1);
+      */
     },
-    startWebcam(state) {
-      console.log(state);
-
-      if (state == true) {
-        navigator.mediaDevices.getUserMedia(this.constraints).then((stream) => {
-          let video = document.getElementById("webcam");
-          video.srcObject = stream;
-          this.webcamStream = stream;
-
-          //this.onLoad();
-          //console.log(stream);
-          //console.log(stream.getTracks());
-          //const myAudioTrack = stream.getAudioTracks();
-          //console.log(myAudioTrack[0].getSettings());
-        });
-      } else if (state === false) {
-        // Désactivate user camera
-
+    startWebcam() {
+      this.seeSelect = true;
+      navigator.mediaDevices.getUserMedia(this.constraints).then((stream) => {
         let video = document.getElementById("webcam");
-        const stream = video.srcObject;
-        const tracks = stream.getTracks();
+        video.srcObject = stream;
+        this.webcamStream = stream;
 
-        tracks.forEach((track) => {
-          track.stop();
-        });
+        //console.log(stream);
+        //console.log(stream.getTracks());
+        //const myAudioTrack = stream.getAudioTracks();
+        //console.log(myAudioTrack[0].getSettings());
+      });
 
-        this.onLoad();
-        console.log(this.webcamStream);
-
-        /*
-        stream.getTracks().forEach(function (track) {
-          track.stop();
-        });
-        */
-      }
+      this.onLoad();
     },
-    setVideoParams(e) {
-      let selected = e.target.value;
-      console.log(selected);
-
-      if (selected === "disabled") {
-        // User want to disable Video Camera
-        this.startWebcam(false);
-      } else {
-        console.log("setVideoParams : " + this.videoChoice.deviceId);
-        this.constraints.video = {
-          deviceId: this.videoChoice.deviceId,
-        };
-        this.startWebcam(true);
-      }
+    setVideoParams() {
+      //console.log("setVideoParams : " + this.videoChoice.deviceId);
+      this.constraints.video = {
+        deviceId: this.videoChoice.deviceId,
+      };
     },
     setAudioParams() {
       //console.log("setAudioParams : " + this.audioChoice.deviceId);
@@ -393,13 +354,9 @@ export default {
     getUserMedia() {
       // Get Permissions
 
-      navigator.mediaDevices.getUserMedia(this.constraints).then((stream) => {
+      navigator.mediaDevices.getUserMedia(this.constraints).then(() => {
         console.log("Streaming now");
-
-        stream.getTracks().forEach(function (track) {
-          track.stop();
-        });
-
+        this.seeSelect = true;
         this.getDevices();
       });
 
@@ -422,7 +379,7 @@ export default {
           this.displayStream = stream;
         });
 
-      //this.onLoad();
+      this.onLoad();
     },
     getDevices() {
       navigator.mediaDevices.enumerateDevices().then((devices) => {

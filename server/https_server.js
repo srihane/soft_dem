@@ -13,10 +13,8 @@ Les certificats utilisés sont ceux de CERTBOT
 */
 
 const https_options = {
-  key: fs.readFileSync(
-    "/etc/letsencrypt/live/demasoft.studyneo.com/privkey.pem"
-  ),
-  cert: fs.readFileSync("/etc/letsencrypt/live/demasoft.studyneo.com/cert.pem"),
+  key: fs.readFileSync(process.env.PATH_SSL_KEY),
+  cert: fs.readFileSync(process.env.PATH_SSL_CERT),
   //requestCert: false,
   rejectUnauthorized: false,
 };

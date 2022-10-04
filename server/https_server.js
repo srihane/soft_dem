@@ -8,10 +8,22 @@ const express = require("express");
 const app = express();
 //const http = require("http");
 let https = require("https");
-//openssl req -nodes -new -x509 -keyout server.key -out server.cert
+// ANCIEN // openssl req -nodes -new -x509 -keyout server.key -out server.cert
+
+/*
+1 - Generate a private key
+openssl genrsa -out key.pem
+
+2 - Create a CSR (Certificate signing request) using private key)
+openssl req -new -key key.pem -out csr.pem
+
+3 - Generate the SSL certification from CSR
+openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
+*/
+
 const https_options = {
-  key: fs.readFileSync("certificate/csr.pem"),
-  cert: fs.readFileSync("certificate/key.pem"),
+  key: fs.readFileSync("certificate/key.pem"),
+  cert: fs.readFileSync("certificate/cert.pem"),
   //requestCert: false,
   rejectUnauthorized: false,
 };

@@ -10,8 +10,8 @@ const app = express();
 let https = require("https");
 //openssl req -nodes -new -x509 -keyout server.key -out server.cert
 const https_options = {
-  key: fs.readFileSync("certificate/server.key"),
-  cert: fs.readFileSync("certificate/server.cert"),
+  key: fs.readFileSync("certificate/csr.pem"),
+  cert: fs.readFileSync("certificate/key.pem"),
   //requestCert: false,
   rejectUnauthorized: false,
 };

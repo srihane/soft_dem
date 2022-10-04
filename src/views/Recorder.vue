@@ -9,7 +9,7 @@
         <span class="input-group-text" id="basic-addon1"
           ><i class="fa-solid fa-clapperboard"></i
         ></span>
-        <select v-model="this.typeOfRecord">
+        <select v-model="this.typeOfRecord" @change="selectTypeOfRecord()">
           <option value="1">Screen and Camera</option>
           <option value="2">Camera Only</option>
         </select>
@@ -31,10 +31,7 @@
       </div>
 
       <form>
-        <div
-          class="select_params"
-          v-if="this.typeOfRecord == '1' || this.typeOfRecord == '2'"
-        >
+        <div class="select_params">
           <!--
           <input
             class="form-check-input"
@@ -127,7 +124,7 @@
       </form>
     </div>
 
-    <div v-if="this.typeOfRecord == '1' || this.typeOfRecord == '3'">
+    <div>
       <div>
         <video
           id="webcam"
@@ -142,23 +139,33 @@
       </div>
       <div>
         <canvas
-          width="1280"
+          :width="this.format.canva.width"
+          :height="this.format.canva.height"
           id="canvas"
-          height="720"
           style="border: 1px solid #000000"
           ref="canvas"
         >
         </canvas>
       </div>
 
-      <video
-        controls
-        id="previewVideo"
-        ref="previewVideo"
-        width="300"
-        height="200"
-      ></video>
+      <div>
+        <h2>Preview :</h2>
+        <video
+          controls
+          id="previewVideo"
+          ref="previewVideo"
+          width="300"
+          height="200"
+        ></video>
+        <div>
+          <button class="btn btn-success" @click="sendRecord()">
+            Valider l'enregistrement
+          </button>
+        </div>
+      </div>
     </div>
+
+    <div v-if="this.typeOfRecord == '2'"></div>
   </div>
 </template>
 <script>
@@ -176,6 +183,21 @@ export default {
   name: "Recorder",
   data() {
     return {
+      // Format of canvas and camera
+      format: {
+        canva: {
+          width: 1280,
+          height: 720,
+        },
+        webcam: {
+          width: 390,
+          height: 240,
+        },
+        display: {
+          width: 1280,
+          height: 720,
+        },
+      },
       // Selection Webcam and Micro
       typeOfRecord: "1",
       activeWebcam: false,
@@ -185,6 +207,7 @@ export default {
       // Media Recorder
       mediaRecorder: null,
       chunks: [],
+      fileVideo: null,
 
       // Canvas
       canvas: null,
@@ -219,19 +242,96 @@ export default {
     var vm = this; // cache
     vm.canvas = vm.$refs.canvas;
     vm.ctx = vm.canvas.getContext("2d");
-    vm.canvas.addEventListener("load", vm.onLoad);
   },
 
   created() {
-    //this.getUserMedia();
-    //this.getAudioDevices();
     this.main();
   },
   methods: {
     async main() {
       await this.getUserMedia();
+    },
+    selectTypeOfRecord() {
+      /*
+      format: {
+        canva: {
+          width: 1280,
+          height: 720,
+        },
+        webcam: {
+          width: 390,
+          height: 240,
+        },
+        display: {
+          width: 1280,
+          height: 720,
+        },
+      },
+      */
 
-      //await this.getDisplay();
+      /*
+      RESOLUTION TAB
+      480p 720x480 
+      720p 1280x720 
+      1080p 1920x1080 
+      */
+
+      if (this.typeOfRecord === "1") {
+        // Screen and Camera
+        this.format = {
+          canva: {
+            width: 1280,
+            height: 720,
+          },
+          webcam: {
+            width: 360,
+            height: 240,
+          },
+          display: {
+            width: 1280,
+            height: 720,
+          },
+        };
+      }
+
+      if (this.typeOfRecord === "2") {
+        // Camera Only
+        this.format = {
+          canva: {
+            width: 720,
+            height: 480,
+          },
+          webcam: {
+            width: 720,
+            height: 480,
+          },
+          display: {
+            width: 0,
+            height: 0,
+          },
+        };
+      }
+    },
+    sendRecord() {
+      var vm = this;
+      var formData = new FormData();
+      formData.append("myfile", vm.fileVideo);
+
+      // http://localhost:3000/upload_file
+      // vm.$store.state.gconfig.url_upload_file
+
+      try {
+        axios.post(vm.$store.state.gconfig.url_upload_file, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            // Accept: "application/json",
+            // 'Authorisation': 'Bearer ' +variable
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
     },
     stopRecord() {
       //vm.mediaRecorder.stop();
@@ -269,29 +369,11 @@ export default {
         var blob = new Blob(chunks, { type: "video/webm" });
         console.log(blob);
 
-        const file = new File([blob], "filename.webm", {
+        vm.fileVideo = new File([blob], "filename.webm", {
           type: blob.type,
           lastModified: new Date().getTime(),
         });
-        console.log(file);
-
-        var formData = new FormData();
-        formData.append("myfile", file);
-
-        // http://localhost:3000/upload_file
-        // vm.$store.state.gconfig.url_upload_file
-        try {
-          axios.post(vm.$store.state.gconfig.url_upload_file, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*",
-              // Accept: "application/json",
-              // 'Authorisation': 'Bearer ' +variable
-            },
-          });
-        } catch (err) {
-          console.log(err);
-        }
+        console.log(vm.fileVideo);
 
         //var file = new File(blob, "myVideo.webm");
         //console.log(file);
@@ -307,19 +389,36 @@ export default {
       };
 
       vm.mediaRecorder.start();
-      this.onLoad();
+      this.drawCanva();
     },
-    onLoad() {
+    drawCanva() {
       var vm = this;
       var webcam = vm.$refs.webcam;
       var display = vm.$refs.display;
 
+      console.log("drawCanva");
+      console.log(vm.format.webcam.width);
+
       setInterval(function () {
         // Draw Display
-        vm.ctx.drawImage(display, 0, 0, 1280, 720);
+        // vm.ctx.drawImage(display, 0, 0, 1280, 720);
+        vm.ctx.drawImage(
+          display,
+          0,
+          0,
+          vm.format.canva.width,
+          vm.format.canva.height
+        );
 
         // Draw Webcam
-        vm.ctx.drawImage(webcam, 0, 0, 426, 240);
+        // vm.ctx.drawImage(webcam, 0, 0, 420, 200);
+        vm.ctx.drawImage(
+          webcam,
+          0,
+          0,
+          vm.format.webcam.width,
+          vm.format.webcam.height
+        );
       }, 1);
     },
     startWebcam(state) {
@@ -331,7 +430,8 @@ export default {
           video.srcObject = stream;
           this.webcamStream = stream;
 
-          //this.onLoad();
+          this.drawCanva();
+
           //console.log(stream);
           //console.log(stream.getTracks());
           //const myAudioTrack = stream.getAudioTracks();
@@ -350,7 +450,7 @@ export default {
 
         this.clearCanvas();
 
-        this.onLoad();
+        this.drawCanva();
         console.log(this.webcamStream);
 
         /*
@@ -422,7 +522,7 @@ export default {
           this.displayStream = stream;
         });
 
-      this.onLoad();
+      this.drawCanva();
     },
     getDevices() {
       navigator.mediaDevices.enumerateDevices().then((devices) => {

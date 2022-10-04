@@ -8,17 +8,8 @@ const express = require("express");
 const app = express();
 //const http = require("http");
 let https = require("https");
-// ANCIEN // openssl req -nodes -new -x509 -keyout server.key -out server.cert
-
 /*
-1 - Generate a private key
-openssl genrsa -out key.pem
-
-2 - Create a CSR (Certificate signing request) using private key)
-openssl req -new -key key.pem -out csr.pem
-
-3 - Generate the SSL certification from CSR
-openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
+Les certificats utilisés sont ceux de CERTBOT
 */
 
 const https_options = {

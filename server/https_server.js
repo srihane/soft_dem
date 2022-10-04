@@ -1,11 +1,22 @@
 //Multer : pour gérer les requêtes HTTP avec envoie de fichier
-const http = require("http");
+
 const path = require("path");
 const fs = require("fs");
 require("dotenv").config();
-const express = require("express");
 
+const express = require("express");
 const app = express();
+//const http = require("http");
+let https = require("https");
+//openssl req -nodes -new -x509 -keyout server.key -out server.cert
+const https_options = {
+  key: fs.readFileSync("certificate/server.key"),
+  cert: fs.readFileSync("certificate/server.cert"),
+  //requestCert: false,
+  rejectUnauthorized: false,
+};
+const server = https.Server(https_options, app);
+
 const port = process.env.SERVER_PORT;
 
 const bodyParser = require("body-parser");
@@ -149,7 +160,8 @@ db.connect((err) => {
     }
   );
 
-  app.listen(port, () => console.log(`Server on port ${port}!`));
+  // http // app.listen(port, () => console.log(`Server on port ${port}!`));
+  server.listen(port, () => console.log(`Server on port ${port}!`));
 }); // DB MYSQL CONNECT
 
 // BASIC function of request server

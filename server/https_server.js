@@ -22,12 +22,14 @@ openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
 */
 
 const https_options = {
-  key: fs.readFileSync("certificate/key.pem"),
-  cert: fs.readFileSync("certificate/cert.pem"),
+  key: fs.readFileSync(
+    "/etc/letsencrypt/live/demasoft.studyneo.com/privkey.pem"
+  ),
+  cert: fs.readFileSync("/etc/letsencrypt/live/demasoft.studyneo.com/cert.pem"),
   //requestCert: false,
   rejectUnauthorized: false,
 };
-const server = https.Server(https_options, app);
+const server = https.createServer(https_options, app);
 
 const port = process.env.SERVER_PORT;
 

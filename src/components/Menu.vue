@@ -23,6 +23,12 @@
             </li>
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/Recorder"
+                >Créer un Présentation</a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/Recorder"
                 >Créer Vidéo</a
               >
             </li>

@@ -21,7 +21,7 @@ const https_options = {
 };
 const server = https.createServer(https_options, app);
 
-getUserComment("https://www.google.com");
+getUserComment("https://fb.watch/fYic-WmIYY/");
 
 app.post("/facebook_comment", (req, res) => {
   //res.send(req.body);
@@ -39,6 +39,13 @@ app.listen(process.env.SERVER_PORT_FACEBOOK, () =>
 );
 */
 
+async function test(link) {
+  const response = await fetch(link);
+  const body = await response.text();
+
+  console.log(body);
+}
+
 async function getUserComment(link) {
   const browser = await puppeteer.launch({
     headless: false,
@@ -50,9 +57,18 @@ async function getUserComment(link) {
 
   // Connexion à la page du lien
   await page.goto(link, { waitUntil: "networkidle2" }); // waitUntil = attend le chargement complet de la page
-  //await page.waitFor(5000);
+
+  await page.click(
+    '[aria-label="Autoriser les cookies essentiels et optionnels"]'
+  );
+
+  const title_h2 = await page.$("h2");
+  console.log(title_h2);
+
+  //await page.click('[data-visualcompletion="css-img"]');
+
   //await page.screenshot({ path: "example.png" });
 
-  await page.waitForTimeout(10000);
-  await browser.close();
+  //await page.waitForTimeout(10000);
+  //await browser.close();
 }
